@@ -1,16 +1,19 @@
 var params = new URLSearchParams(window.location.search);
 
-var nombre = params.get('nombre')
-var sala = params.get('sala')
+var nombre = params.get('nombre');
+var sala = params.get('sala');
 
-//referencias de jQuery
-var divUsuarios = $('#divUsuarios')
-var formEnviar = $('#formEnviar')
-var txtMsg = $('#txtMsg')
-var divChatbox = $('#divChatbox')
 
-//Funciones para renderizar usuarios
-function renderizarUsuarios(personas) { // [{}, {}, {}] arreglo de personas
+// referencias de jQuery
+var divUsuarios = $('#divUsuarios');
+var formEnviar = $('#formEnviar');
+var txtMensaje = $('#txtMensaje');
+var divChatbox = $('#divChatbox');
+
+
+// Funciones para renderizar usuarios
+function renderizarUsuarios(personas) { // [{},{},{}]
+
     console.log(personas);
 
     var html = '';
@@ -30,19 +33,18 @@ function renderizarUsuarios(personas) { // [{}, {}, {}] arreglo de personas
 
 }
 
+
 function renderizarMensajes(mensaje, yo) {
 
     var html = '';
     var fecha = new Date(mensaje.fecha);
     var hora = fecha.getHours() + ':' + fecha.getMinutes();
 
-    //para cambiar la forma en que aparece el mensaje del admin
     var adminClass = 'info';
     if (mensaje.nombre === 'Administrador') {
         adminClass = 'danger';
     }
 
-    //si soy yo el qe escribe:
     if (yo) {
         html += '<li class="reverse">';
         html += '    <div class="chat-content">';
@@ -72,6 +74,7 @@ function renderizarMensajes(mensaje, yo) {
 
 
     divChatbox.append(html);
+
 }
 
 function scrollBottom() {
@@ -91,31 +94,36 @@ function scrollBottom() {
     }
 }
 
-//Listeners
+
+
+
+// Listeners
 divUsuarios.on('click', 'a', function() {
 
-    var id = $(this).data('id')
+    var id = $(this).data('id');
 
     if (id) {
-        console.log(id)
+        console.log(id);
     }
 
-})
+});
 
 formEnviar.on('submit', function(e) {
-    e.preventDefault()
 
-    if (txtMsg.val().trim().length === 0) {
-        return
+    e.preventDefault();
+
+    if (txtMensaje.val().trim().length === 0) {
+        return;
     }
 
     socket.emit('crearMensaje', {
         nombre: nombre,
-        mensaje: txtMsg.val()
+        mensaje: txtMensaje.val()
     }, function(mensaje) {
-        txtMsg.val('').focus()
-        renderizarMensajes(mensaje, true)
-        scrollBottom()
+        txtMensaje.val('').focus();
+        renderizarMensajes(mensaje, true);
+        scrollBottom();
     });
 
-})
+
+});
